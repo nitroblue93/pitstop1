@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pitstop Polish — Toronto's Mobile Detail Crew</title>
+<script src="https://cdn.tailwindcss.com/3.4.1"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2F8BFF;
+    --blue-deep:#0E6CFF;
+    --ink:#070809;
+    --ink-2:#0E1013;
+    --ink-3:#16191E;
+    --line:rgba(255,255,255,.08);
+    --mute:#8A93A0;
+  }
+  html,body{background:var(--ink);color:#fff;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+  body{overflow-x:hidden;scroll-behavior:smooth;}
+  .display{font-family:'Anton',Impact,sans-serif;letter-spacing:-.01em;line-height:.9;text-transform:uppercase;}
+  .eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;font-weight:700;}
+  .num{font-family:'Anton',Impact,sans-serif;letter-spacing:0;}
+  .glass{background:rgba(255,255,255,.025);border:1px solid var(--line);backdrop-filter:blur(8px);}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--line);}
+  .hairline{border-color:var(--line);}
+  .btn-primary{background:var(--blue);color:#fff;font-weight:800;letter-spacing:.05em;}
+  .btn-primary:hover{background:#4a9bff;box-shadow:0 8px 30px rgba(47,139,255,.35);}
+  .chip{border:1px solid var(--line);background:rgba(255,255,255,.02);}
+  .scroll-hide::-webkit-scrollbar{display:none;}
+  .scroll-hide{scrollbar-width:none;}
+
+  /* hero */
+  .hero-img{background-image:linear-gradient(180deg,rgba(7,8,9,.55) 0%,rgba(7,8,9,.35) 40%,rgba(7,8,9,.95) 100%),url('https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2000&auto=format&fit=crop');background-size:cover;background-position:center;}
+  .grain::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.04) 1px,transparent 1px);background-size:3px 3px;mix-blend-mode:overlay;opacity:.4;}
+
+  /* marquee */
+  @keyframes marq { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  .marquee{display:flex;width:max-content;animation:marq 40s linear infinite;}
+
+  /* before/after */
+  .ba-wrap{position:relative;overflow:hidden;border-radius:18px;}
+  .ba-after{position:absolute;inset:0;clip-path:inset(0 0 0 50%);}
+  .ba-handle{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--blue);box-shadow:0 0 20px rgba(47,139,255,.6);}
+  .ba-handle::before{content:'';position:absolute;top:50%;left:50%;width:42px;height:42px;border-radius:99px;background:var(--blue);transform:translate(-50%,-50%);box-shadow:0 0 30px rgba(47,139,255,.5);}
+  .ba-handle::after{content:'⇋';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);color:#fff;font-weight:900;font-size:18px;}
+  .ba-range{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;}
+  .ba-tag{position:absolute;top:14px;font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;padding:6px 10px;border-radius:99px;background:rgba(0,0,0,.6);border:1px solid var(--line);}
+
+  /* mobile menu */
+  #mobile-menu{transform:translateY(-100%);transition:transform .35s ease;}
+  #mobile-menu.open{transform:translateY(0);}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* tier active */
+  .tier{border:1px solid var(--line);transition:transform .25s ease,border-color .2s,box-shadow .25s;}
+  .tier.active{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue),0 24px 60px -20px rgba(47,139,255,.35);}
+  .tier:hover{transform:translateY(-4px);}
+
+  .check{display:inline-flex;width:18px;height:18px;border-radius:99px;background:rgba(47,139,255,.15);color:var(--blue);align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-top:2px;}
+
+  /* booking package layout */
+  .pkg-row{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 24px;}
+  .pkg-row > *{flex:0 0 86%;scroll-snap-align:center;}
+  @media(min-width:900px){
+    .pkg-row{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible;gap:18px;}
+    .pkg-row > *{flex:none;width:auto;}
+  }
+
+  /* faq */
+  .faq summary{list-style:none;cursor:pointer;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq[open] .faq-icon{transform:rotate(45deg);}
+  .faq-icon{transition:transform .25s ease;}
+
+  /* loc cards active */
+  .loc-card.active{border-color:var(--blue)!important;box-shadow:0 0 0 1px var(--blue),0 24px 60px -20px rgba(47,139,255,.35);background:rgba(47,139,255,.04);}
+
+  /* services list rows */
+  .svc-row{display:flex;flex-direction:column;gap:14px;padding:22px 0;border-bottom:1px solid var(--line);}
+  .svc-row:last-child{border-bottom:0;}
+  .svc-body{flex:1;min-width:0;}
+  .svc-title{font-weight:700;font-size:18px;line-height:1.25;display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .svc-desc{color:rgba(255,255,255,.6);font-size:13.5px;line-height:1.6;margin-top:10px;max-width:640px;}
+  .svc-price{display:flex;flex-direction:column;align-items:flex-start;gap:2px;}
+  .svc-price .lbl{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);font-weight:700;}
+  .svc-price .amt{font-family:'Anton',Impact,sans-serif;font-size:26px;color:var(--blue);line-height:1;}
+  @media(min-width:768px){
+    .svc-row{flex-direction:row;align-items:flex-start;justify-content:space-between;gap:32px;}
+    .svc-price{align-items:flex-end;text-align:right;flex-shrink:0;}
+    .svc-price .amt{font-size:30px;}
+  }
+
+  /* gallery hover */
+  .g-card{position:relative;overflow:hidden;border-radius:20px;}
+  .g-card img{transition:transform 1.2s ease,filter .6s ease;filter:saturate(.85) contrast(1.05);}
+  .g-card:hover img{transform:scale(1.06);filter:saturate(1.1) contrast(1.05);}
+
+  /* page transitions */
+  .page-section{animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  /* nav active */
+  .nav-link.active{color:#fff;}
+  .nav-link.active::after{content:'';display:block;height:2px;background:var(--blue);margin-top:4px;border-radius:2px;}
+
+  /* spec dots */
+  .dot{width:6px;height:6px;border-radius:99px;background:var(--blue);display:inline-block;}
+</style>
+</head>
+<template id="__bundler_thumbnail" data-bg-color="#070809">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#070809"/>
+    <g transform="translate(600 400)">
+      <rect x="-180" y="-180" width="360" height="360" rx="60" fill="#2F8BFF"/>
+      <path d="M -90 30 Q -90 -90 0 -90 Q 90 -90 90 30 L 90 90 L -90 90 Z" fill="#070809"/>
+      <circle cx="-50" cy="90" r="22" fill="#070809"/>
+      <circle cx="50" cy="90" r="22" fill="#070809"/>
+      <circle cx="-50" cy="90" r="10" fill="#2F8BFF"/>
+      <circle cx="50" cy="90" r="10" fill="#2F8BFF"/>
+      <path d="M 110 -130 L 130 -110 M 130 -130 L 110 -110" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="140" cy="-150" r="4" fill="#fff"/>
+    </g>
+  </svg>
+</template>
+<body class="bg-[#070809] text-white">
+
+<!-- ============== NAV ============== -->
+<nav class="fixed top-0 inset-x-0 z-[100] backdrop-blur-xl bg-[#070809]/85 border-b border-white/5">
+  <div class="max-w-[1280px] mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
+    <button onclick="showPage('home')" class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-md bg-[var(--blue)] grid place-items-center"><i class="fa-solid fa-droplet text-[14px] text-white"></i></div>
+      <div class="display text-[20px] tracking-tight">Pitstop<span class="text-[var(--blue)]">Polish</span></div>
+    </button>
+    <div class="hidden lg:flex items-center gap-9 text-[12px] font-bold tracking-widest uppercase text-white/60">
+      <button data-nav="home" onclick="showPage('home')" class="nav-link hover:text-white transition">Home</button>
+      <button data-nav="services" onclick="showPage('services')" class="nav-link hover:text-white transition">Services</button>
+      <button data-nav="gallery" onclick="showPage('gallery')" class="nav-link hover:text-white transition">Gallery</button>
+      <button data-nav="booking" onclick="showPage('booking')" class="nav-link hover:text-white transition">Pricing</button>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="tel:14165550000" class="hidden md:flex items-center gap-2 text-[12px] font-bold uppercase tracking-widest text-white/70 hover:text-white"><i class="fa-solid fa-phone text-[var(--blue)]"></i> (416) 555-0199</a>
+      <button onclick="showPage('booking')" class="btn-primary px-5 py-2.5 rounded-full text-[11px] uppercase tracking-widest hidden sm:block">Book Now</button>
+      <button onclick="toggleMenu()" class="lg:hidden w-10 h-10 grid place-items-center rounded-full glass"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+</nav>
+
+<div id="mobile-menu" class="fixed top-16 inset-x-0 z-[99] bg-[#070809] border-b border-white/5 lg:hidden">
+  <div class="px-5 py-6 grid gap-1 text-[15px] font-bold uppercase tracking-widest">
+    <button onclick="showPage('home');toggleMenu();" class="text-left py-3 border-b border-white/5">Home</button>
+    <button onclick="showPage('services');toggleMenu();" class="text-left py-3 border-b border-white/5">Services</button>
+    <button onclick="showPage('gallery');toggleMenu();" class="text-left py-3 border-b border-white/5">Gallery</button>
+    <button onclick="showPage('booking');toggleMenu();" class="text-left py-3 border-b border-white/5">Pricing &amp; Booking</button>
+    <a href="tel:14165550199" class="text-left py-3 text-[var(--blue)]"><i class="fa-solid fa-phone mr-2"></i> (416) 555-0199</a>
+  </div>
+</div>
+
+<main class="pt-16">
+
+<!-- =====================================================
+     HOME
+====================================================== -->
+<section id="home-page" class="page-section">
+
+  <!-- HERO -->
+  <div class="relative hero-img grain min-h-[88vh] flex items-end overflow-hidden">
+    <div class="relative max-w-[1280px] w-full mx-auto px-5 md:px-8 pb-16 md:pb-24">
+      <div class="eyebrow text-[var(--blue)] mt-6 md:mt-10 mb-4 md:mb-5 flex items-center gap-2 whitespace-nowrap text-[10px] sm:text-[11px]"><span class="dot"></span> Toronto · Mobile Detailing · Est. 2021</div>
+      <h1 class="display text-[64px] sm:text-[96px] md:text-[140px] lg:text-[180px]">
+        We come<br/>
+        <span class="text-white/40">to your</span> <span class="text-[var(--blue)]">driveway.</span>
+      </h1>
+      <p class="mt-6 max-w-xl text-white/70 text-[15px] md:text-[17px] leading-relaxed">
+        A small Toronto crew that treats every car like it's our own. Hand-wash, deep interior care, paint correction and ceramic — all done at your place, on your schedule.
+      </p>
+      <div class="mt-9 flex flex-wrap gap-3">
+        <button onclick="showPage('booking')" class="btn-primary px-7 py-4 rounded-full text-[12px] uppercase tracking-[.2em]"><i class="fa-solid fa-calendar-check mr-2"></i> Book Your Detail</button>
+        <button onclick="showPage('gallery')" class="px-7 py-4 rounded-full text-[12px] uppercase tracking-[.2em] glass hover:bg-white/5"><i class="fa-solid fa-images mr-2"></i> See Our Work</button>
+      </div>
+
+      <!-- proof strip -->
+      <div class="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl">
+        <div><div class="display text-[40px] md:text-[52px] text-[var(--blue)]">800+</div><div class="text-[11px] uppercase tracking-widest text-white/50 mt-1">Cars detailed</div></div>
+        <div><div class="display text-[40px] md:text-[52px] text-[var(--blue)]">4.9★</div><div class="text-[11px] uppercase tracking-widest text-white/50 mt-1">Google rating</div></div>
+        <div><div class="display text-[40px] md:text-[52px] text-[var(--blue)]">GTA</div><div class="text-[11px] uppercase tracking-widest text-white/50 mt-1">Wide service area</div></div>
+        <div><div class="display text-[40px] md:text-[52px] text-[var(--blue)]">100%</div><div class="text-[11px] uppercase tracking-widest text-white/50 mt-1">Mobile &amp; insured</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGO MARQUEE -->
+  <div class="border-y border-white/5 py-7 overflow-hidden">
+    <div class="marquee gap-16 px-8 text-white/30 text-[13px] uppercase tracking-[.3em] font-bold whitespace-nowrap">
+      <span>Porsche</span><span>·</span><span>BMW</span><span>·</span><span>Tesla</span><span>·</span><span>Mercedes-Benz</span><span>·</span><span>Audi</span><span>·</span><span>Range Rover</span><span>·</span><span>Lexus</span><span>·</span><span>Toyota</span><span>·</span><span>Honda</span><span>·</span><span>Ford</span><span>·</span>
+      <span>Porsche</span><span>·</span><span>BMW</span><span>·</span><span>Tesla</span><span>·</span><span>Mercedes-Benz</span><span>·</span><span>Audi</span><span>·</span><span>Range Rover</span><span>·</span><span>Lexus</span><span>·</span><span>Toyota</span><span>·</span><span>Honda</span><span>·</span><span>Ford</span><span>·</span>
+    </div>
+  </div>
+
+  <!-- BEFORE / AFTER -->
+  <section class="py-24 md:py-32 px-5 md:px-8 max-w-[1280px] mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 reveal">
+      <div>
+        <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> Real results, real Toronto cars</div>
+        <h2 class="display text-[44px] md:text-[72px]">Drag to see<br/>the <span class="text-[var(--blue)]">difference.</span></h2>
+      </div>
+      <p class="text-white/60 max-w-md text-[15px] leading-relaxed">No filters. No tricks. Just what a proper deep clean and a multi-stage paint correction actually look like.</p>
+    </div>
+
+    <div class="ba-wrap reveal aspect-[16/9] md:aspect-[21/9]">
+      <img src="https://images.unsplash.com/photo-1607860108855-64acf2078ed9?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover grayscale" alt="">
+      <div class="ba-after"><img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover" alt=""></div>
+      <div class="ba-tag left-4" style="color:#fff">Before</div>
+      <div class="ba-tag right-4" style="color:var(--blue);border-color:var(--blue)">After</div>
+      <div class="ba-handle" id="ba-handle"></div>
+      <input class="ba-range" type="range" min="0" max="100" value="50" oninput="moveBA(this.value)">
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="py-24 md:py-32 px-5 md:px-8 bg-[var(--ink-2)] border-y border-white/5">
+    <div class="max-w-[1280px] mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 reveal">
+        <div>
+          <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> How it works</div>
+          <h2 class="display text-[44px] md:text-[72px]">Easy as<br/><span class="text-[var(--blue)]">pulling in.</span></h2>
+        </div>
+        <p class="text-white/60 max-w-md text-[15px] leading-relaxed">Five simple steps from booking to a car that looks like the day you drove it home.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 reveal">
+        <div class="card rounded-2xl p-7 hover:border-[var(--blue)]/40 transition">
+          <div class="num text-[64px] text-[var(--blue)] leading-none">01</div>
+          <h4 class="font-bold text-[15px] mt-4">Pick your package</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">Tell us your year, make and model. We'll size up the right detail for you.</p>
+        </div>
+        <div class="card rounded-2xl p-7 hover:border-[var(--blue)]/40 transition">
+          <div class="num text-[64px] text-[var(--blue)] leading-none">02</div>
+          <h4 class="font-bold text-[15px] mt-4">Book a window</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">Pick a 3-hour slot that works. We'll text you 30 minutes before arriving.</p>
+        </div>
+        <div class="card rounded-2xl p-7 hover:border-[var(--blue)]/40 transition">
+          <div class="num text-[64px] text-[var(--blue)] leading-none">03</div>
+          <h4 class="font-bold text-[15px] mt-4">We pull up</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">Self-contained mobile rig — water, power and pro tools. No hookup needed.</p>
+        </div>
+        <div class="card rounded-2xl p-7 hover:border-[var(--blue)]/40 transition">
+          <div class="num text-[64px] text-[var(--blue)] leading-none">04</div>
+          <h4 class="font-bold text-[15px] mt-4">We get to work</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">Two-bucket wash, decontamination, interior deep clean — every inch covered.</p>
+        </div>
+        <div class="card rounded-2xl p-7 hover:border-[var(--blue)]/40 transition">
+          <div class="num text-[64px] text-[var(--blue)] leading-none">05</div>
+          <h4 class="font-bold text-[15px] mt-4">Walk-around &amp; pay</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">We hand you the keys, do a walk-around, and tap to pay. That's it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE TEASER GRID -->
+  <section class="py-24 md:py-32 px-5 md:px-8 max-w-[1280px] mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal">
+      <div>
+        <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> What we do</div>
+        <h2 class="display text-[44px] md:text-[72px]">Every part of <br/>the car, <span class="text-[var(--blue)]">covered.</span></h2>
+      </div>
+      <button onclick="showPage('services')" class="self-start md:self-end px-6 py-3 rounded-full glass text-[12px] uppercase tracking-widest hover:bg-white/5">Full menu →</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 reveal">
+      <a onclick="showPage('booking')" class="md:col-span-7 g-card aspect-[16/10] cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1552933529-e359b2477252?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 p-7 md:p-9">
+          <div class="eyebrow text-[var(--blue)] mb-2">01 — Detailing</div>
+          <h3 class="display text-[36px] md:text-[56px]">Inside &amp; Out</h3>
+          <p class="text-white/70 max-w-md mt-2 text-[14px]">From a quick refresh to a full deep clean — we treat the parts you see and the parts you don't.</p>
+        </div>
+      </a>
+      <a onclick="showPage('booking')" class="md:col-span-5 g-card aspect-[4/5] md:aspect-[16/10] cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 p-7 md:p-9">
+          <div class="eyebrow text-[var(--blue)] mb-2">02 — Paint</div>
+          <h3 class="display text-[36px] md:text-[56px]">Paint Correction</h3>
+          <p class="text-white/70 max-w-md mt-2 text-[14px]">Multi-stage polish that erases swirls, holograms and fine scratches. Mirror finish, restored.</p>
+        </div>
+      </a>
+      <a onclick="showPage('booking')" class="md:col-span-5 g-card aspect-[4/5] md:aspect-[16/10] cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 p-7 md:p-9">
+          <div class="eyebrow text-[var(--blue)] mb-2">03 — Protection</div>
+          <h3 class="display text-[36px] md:text-[56px]">Ceramic Coating</h3>
+          <p class="text-white/70 max-w-md mt-2 text-[14px]">A nano-ceramic shield that bonds to your paint — hydrophobic, UV-resistant, years of gloss.</p>
+        </div>
+      </a>
+      <a onclick="showPage('booking')" class="md:col-span-7 g-card aspect-[16/10] cursor-pointer">
+        <img src="https://images.unsplash.com/photo-1607860108855-64acf2078ed9?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover" alt="">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 p-7 md:p-9">
+          <div class="eyebrow text-[var(--blue)] mb-2">04 — Specialty</div>
+          <h3 class="display text-[36px] md:text-[56px]">Add-On Services</h3>
+          <p class="text-white/70 max-w-md mt-2 text-[14px]">Pet hair, ozone odor, headlight restoration, engine bay — the things other shops skip.</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section class="py-24 md:py-32 px-5 md:px-8 bg-[var(--ink-2)] border-y border-white/5">
+    <div class="max-w-[1280px] mx-auto">
+      <div class="text-center reveal mb-14">
+        <div class="eyebrow text-[var(--blue)] mb-3 flex items-center justify-center gap-2"><span class="dot"></span> Why Pitstop</div>
+        <h2 class="display text-[44px] md:text-[80px]">A small crew. <br/><span class="text-[var(--blue)]">Big standards.</span></h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 reveal">
+        <div class="card rounded-2xl p-7">
+          <div class="w-11 h-11 rounded-xl bg-[var(--blue)]/15 grid place-items-center mb-5"><i class="fa-solid fa-shield-halved text-[var(--blue)] text-[18px]"></i></div>
+          <h4 class="font-bold text-[16px]">Fully insured</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">$2M liability + care, custody &amp; control. Your car is safer with us than at most shops.</p>
+        </div>
+        <div class="card rounded-2xl p-7">
+          <div class="w-11 h-11 rounded-xl bg-[var(--blue)]/15 grid place-items-center mb-5"><i class="fa-solid fa-leaf text-[var(--blue)] text-[18px]"></i></div>
+          <h4 class="font-bold text-[16px]">Eco-friendly water</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">Reclaim mats and bio-degradable products. We're tidier than the kid down the street.</p>
+        </div>
+        <div class="card rounded-2xl p-7">
+          <div class="w-11 h-11 rounded-xl bg-[var(--blue)]/15 grid place-items-center mb-5"><i class="fa-solid fa-truck-pickup text-[var(--blue)] text-[18px]"></i></div>
+          <h4 class="font-bold text-[16px]">Self-contained rig</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">Onboard water, power and a 200-bar pressure system. Park anywhere — we're set up.</p>
+        </div>
+        <div class="card rounded-2xl p-7">
+          <div class="w-11 h-11 rounded-xl bg-[var(--blue)]/15 grid place-items-center mb-5"><i class="fa-solid fa-handshake text-[var(--blue)] text-[18px]"></i></div>
+          <h4 class="font-bold text-[16px]">No surprise pricing</h4>
+          <p class="text-white/55 text-[13px] mt-2 leading-relaxed">You see the quote before we start. Pay only when you're happy with the walk-around.</p>
+        </div>
+      </div>
+
+      <!-- secondary trust row -->
+      <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 reveal">
+        <div class="glass rounded-xl p-5 flex items-center gap-3"><i class="fa-solid fa-star text-[var(--blue)]"></i> <div><div class="font-bold text-[13px]">4.9 on Google</div><div class="text-white/50 text-[11px] uppercase tracking-widest">240+ reviews</div></div></div>
+        <div class="glass rounded-xl p-5 flex items-center gap-3"><i class="fa-solid fa-clock text-[var(--blue)]"></i> <div><div class="font-bold text-[13px]">On-time, every time</div><div class="text-white/50 text-[11px] uppercase tracking-widest">Or $25 off</div></div></div>
+        <div class="glass rounded-xl p-5 flex items-center gap-3"><i class="fa-solid fa-rotate-left text-[var(--blue)]"></i> <div><div class="font-bold text-[13px]">7-day touch-up</div><div class="text-white/50 text-[11px] uppercase tracking-widest">Free, on us</div></div></div>
+        <div class="glass rounded-xl p-5 flex items-center gap-3"><i class="fa-solid fa-credit-card text-[var(--blue)]"></i> <div><div class="font-bold text-[13px]">Tap to pay</div><div class="text-white/50 text-[11px] uppercase tracking-widest">When we're done</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="py-24 md:py-32 px-5 md:px-8 max-w-[1280px] mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal">
+      <div>
+        <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> What Toronto says</div>
+        <h2 class="display text-[44px] md:text-[72px]">Word travels<br/><span class="text-[var(--blue)]">street by street.</span></h2>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 reveal">
+      <div class="card rounded-2xl p-7">
+        <div class="text-[var(--blue)] mb-3">★★★★★</div>
+        <p class="text-white/80 text-[15px] leading-relaxed">"Booked the Complete Detail before listing my Audi. Got asking price the same weekend. These guys are wizards."</p>
+        <div class="mt-6 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-white/10 grid place-items-center font-bold text-[12px]">MR</div>
+          <div><div class="font-bold text-[13px]">Marcus R.</div><div class="text-white/40 text-[11px] uppercase tracking-widest">Leslieville · Audi A4</div></div>
+        </div>
+      </div>
+      <div class="card rounded-2xl p-7">
+        <div class="text-[var(--blue)] mb-3">★★★★★</div>
+        <p class="text-white/80 text-[15px] leading-relaxed">"Two toddlers, a Lab, and a year of takeout. They got my X5 looking factory. Worth every penny."</p>
+        <div class="mt-6 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-white/10 grid place-items-center font-bold text-[12px]">SK</div>
+          <div><div class="font-bold text-[13px]">Sarah K.</div><div class="text-white/40 text-[11px] uppercase tracking-widest">North York · BMW X5</div></div>
+        </div>
+      </div>
+      <div class="card rounded-2xl p-7">
+        <div class="text-[var(--blue)] mb-3">★★★★★</div>
+        <p class="text-white/80 text-[15px] leading-relaxed">"Showed up with their own water tank to my condo's parking lot. Polite, on time, and the paint correction was insane."</p>
+        <div class="mt-6 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-white/10 grid place-items-center font-bold text-[12px]">DT</div>
+          <div><div class="font-bold text-[13px]">Dev T.</div><div class="text-white/40 text-[11px] uppercase tracking-widest">King West · Tesla Model 3</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE AREA -->
+  <section class="py-24 md:py-32 px-5 md:px-8 bg-[var(--ink-2)] border-y border-white/5">
+    <div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="reveal">
+        <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> Service area</div>
+        <h2 class="display text-[44px] md:text-[72px]">Anywhere in <br/>the <span class="text-[var(--blue)]">GTA.</span></h2>
+        <p class="text-white/65 text-[15px] mt-5 max-w-lg leading-relaxed">From High Park to Scarborough, downtown condos to driveways in Vaughan — if you're in the GTA, we're already on the way. Travel within Toronto is on us; outer regions add a small fee.</p>
+        <div class="mt-8 grid grid-cols-2 gap-2 max-w-md text-[13px]">
+          <div class="chip rounded-lg px-3 py-2"><i class="fa-solid fa-check text-[var(--blue)] mr-2"></i> Toronto</div>
+          <div class="chip rounded-lg px-3 py-2"><i class="fa-solid fa-check text-[var(--blue)] mr-2"></i> North York</div>
+          <div class="chip rounded-lg px-3 py-2"><i class="fa-solid fa-check text-[var(--blue)] mr-2"></i> Etobicoke</div>
+          <div class="chip rounded-lg px-3 py-2"><i class="fa-solid fa-check text-[var(--blue)] mr-2"></i> Scarborough</div>
+          <div class="chip rounded-lg px-3 py-2"><i class="fa-solid fa-check text-[var(--blue)] mr-2"></i> Mississauga</div>
+          <div class="chip rounded-lg px-3 py-2"><i class="fa-solid fa-check text-[var(--blue)] mr-2"></i> Vaughan</div>
+          <div class="chip rounded-lg px-3 py-2"><i class="fa-solid fa-check text-[var(--blue)] mr-2"></i> Markham</div>
+          <div class="chip rounded-lg px-3 py-2"><i class="fa-solid fa-check text-[var(--blue)] mr-2"></i> Richmond Hill</div>
+        </div>
+      </div>
+      <div class="reveal relative aspect-[5/4] rounded-3xl overflow-hidden card">
+        <img src="https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?q=80&w=2000&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-50" alt="">
+        <div class="absolute inset-0 bg-gradient-to-tr from-black/80 via-transparent to-[var(--blue)]/20"></div>
+        <!-- Toronto map dots overlay -->
+        <svg viewBox="0 0 500 400" class="absolute inset-0 w-full h-full">
+          <defs>
+            <radialGradient id="g1"><stop offset="0%" stop-color="#2F8BFF" stop-opacity="0.6"/><stop offset="100%" stop-color="#2F8BFF" stop-opacity="0"/></radialGradient>
+          </defs>
+          <circle cx="250" cy="220" r="80" fill="url(#g1)"/>
+          <circle cx="250" cy="220" r="6" fill="#2F8BFF"/>
+          <circle cx="170" cy="180" r="4" fill="#fff" opacity=".7"/>
+          <circle cx="320" cy="200" r="4" fill="#fff" opacity=".7"/>
+          <circle cx="290" cy="280" r="4" fill="#fff" opacity=".7"/>
+          <circle cx="200" cy="260" r="4" fill="#fff" opacity=".7"/>
+          <circle cx="380" cy="160" r="4" fill="#fff" opacity=".7"/>
+          <circle cx="120" cy="240" r="4" fill="#fff" opacity=".7"/>
+          <text x="265" y="225" font-family="Manrope" font-size="11" font-weight="700" fill="#fff">Toronto HQ</text>
+        </svg>
+        <div class="absolute bottom-5 left-5 right-5 glass rounded-xl px-4 py-3 flex items-center justify-between">
+          <div><div class="text-[11px] uppercase tracking-widest text-white/50">Same-day available</div><div class="font-bold">Most weekday slots</div></div>
+          <button onclick="showPage('booking')" class="text-[var(--blue)] font-bold text-[12px] uppercase tracking-widest">Check yours →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-24 md:py-32 px-5 md:px-8 max-w-[900px] mx-auto">
+    <div class="text-center mb-12 reveal">
+      <div class="eyebrow text-[var(--blue)] mb-3 flex items-center justify-center gap-2"><span class="dot"></span> FAQ</div>
+      <h2 class="display text-[44px] md:text-[72px]">Common <span class="text-[var(--blue)]">questions.</span></h2>
+    </div>
+
+    <div class="space-y-3 reveal">
+      <details class="faq card rounded-2xl p-6">
+        <summary class="flex justify-between items-center"><span class="font-bold text-[16px]">Do I need to provide water or power?</span><span class="faq-icon text-[var(--blue)] text-2xl">+</span></summary>
+        <p class="mt-4 text-white/65 text-[14px] leading-relaxed">Nope — our rig is fully self-contained with onboard water, a generator, and a hot-water system. We just need a flat spot to park and we're good to go.</p>
+      </details>
+      <details class="faq card rounded-2xl p-6">
+        <summary class="flex justify-between items-center"><span class="font-bold text-[16px]">How long does a detail take?</span><span class="faq-icon text-[var(--blue)] text-2xl">+</span></summary>
+        <p class="mt-4 text-white/65 text-[14px] leading-relaxed">An "In and Out" runs 2–3 hours. A "Complete Detail" is 4–5 hours. Paint correction and ceramic coating are usually a full day or two — we'll give you an exact window when you book.</p>
+      </details>
+      <details class="faq card rounded-2xl p-6">
+        <summary class="flex justify-between items-center"><span class="font-bold text-[16px]">What if it rains?</span><span class="faq-icon text-[var(--blue)] text-2xl">+</span></summary>
+        <p class="mt-4 text-white/65 text-[14px] leading-relaxed">If you've got a covered driveway or garage, we keep going. Otherwise, we'll text you the night before and reschedule for free. No drama.</p>
+      </details>
+      <details class="faq card rounded-2xl p-6">
+        <summary class="flex justify-between items-center"><span class="font-bold text-[16px]">Can you do condo parking lots?</span><span class="faq-icon text-[var(--blue)] text-2xl">+</span></summary>
+        <p class="mt-4 text-white/65 text-[14px] leading-relaxed">Yes — most of our work happens in condo lots and underground garages. We just ask that you clear it with property management first.</p>
+      </details>
+      <details class="faq card rounded-2xl p-6">
+        <summary class="flex justify-between items-center"><span class="font-bold text-[16px]">Do you do EVs and Teslas?</span><span class="faq-icon text-[var(--blue)] text-2xl">+</span></summary>
+        <p class="mt-4 text-white/65 text-[14px] leading-relaxed">All day. EV-safe products, careful around sensors and door handles, and ceramic packages built for the soft factory paint Teslas come with.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- CTA STRIP -->
+  <section class="px-5 md:px-8 pb-24">
+    <div class="max-w-[1280px] mx-auto rounded-[28px] p-10 md:p-16 relative overflow-hidden" style="background:linear-gradient(135deg,#0E6CFF 0%,#0A4FCC 100%);">
+      <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-white/10 blur-3xl"></div>
+      <div class="relative">
+        <div class="eyebrow text-white/70 mb-4"><span class="dot bg-white"></span> &nbsp;Toronto · Book today</div>
+        <h2 class="display text-[44px] md:text-[88px]">Ready when <br/>you are.</h2>
+        <p class="text-white/85 mt-5 max-w-lg text-[15px] leading-relaxed">Most weeks we're booked 3–5 days out. Lock in your slot now and we'll come to you.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <button onclick="showPage('booking')" class="bg-black text-white px-7 py-4 rounded-full text-[12px] uppercase tracking-[.2em] font-bold hover:bg-white hover:text-black transition">Book a detail →</button>
+          <a href="tel:14165550199" class="border border-white/40 px-7 py-4 rounded-full text-[12px] uppercase tracking-[.2em] font-bold hover:bg-white/10"><i class="fa-solid fa-phone mr-2"></i> Call (416) 555-0199</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 px-5 md:px-8 pt-16 pb-10">
+    <div class="max-w-[1280px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 mb-14">
+      <div class="col-span-2">
+        <div class="flex items-center gap-2 mb-5">
+          <div class="w-8 h-8 rounded-md bg-[var(--blue)] grid place-items-center"><i class="fa-solid fa-droplet text-[14px] text-white"></i></div>
+          <div class="display text-[20px]">Pitstop<span class="text-[var(--blue)]">Polish</span></div>
+        </div>
+        <p class="text-white/55 text-[14px] max-w-sm leading-relaxed">Toronto's mobile detailing crew. Showroom shine, in your driveway. Family-run, fully insured, and proudly local since 2021.</p>
+      </div>
+      <div>
+        <div class="eyebrow text-[var(--blue)] mb-5">Services</div>
+        <ul class="space-y-3 text-[13px] text-white/65">
+          <li><button onclick="showPage('services')" class="hover:text-white">Detailing Packages</button></li>
+          <li><button onclick="showPage('services')" class="hover:text-white">Paint Correction</button></li>
+          <li><button onclick="showPage('services')" class="hover:text-white">Ceramic Coating</button></li>
+          <li><button onclick="showPage('services')" class="hover:text-white">Add-ons</button></li>
+        </ul>
+      </div>
+      <div>
+        <div class="eyebrow text-[var(--blue)] mb-5">Get in touch</div>
+        <ul class="space-y-3 text-[13px] text-white/65">
+          <li><a href="tel:14165550199" class="hover:text-white"><i class="fa-solid fa-phone mr-2 text-[var(--blue)]"></i> (416) 555-0199</a></li>
+          <li><a href="mailto:hi@pitstoppolish.ca" class="hover:text-white"><i class="fa-solid fa-envelope mr-2 text-[var(--blue)]"></i> hi@pitstoppolish.ca</a></li>
+          <li><span><i class="fa-solid fa-location-dot mr-2 text-[var(--blue)]"></i> Toronto, ON</span></li>
+        </ul>
+        <div class="flex gap-3 mt-5">
+          <a class="w-9 h-9 rounded-full glass grid place-items-center hover:text-[var(--blue)]"><i class="fa-brands fa-instagram"></i></a>
+          <a class="w-9 h-9 rounded-full glass grid place-items-center hover:text-[var(--blue)]"><i class="fa-brands fa-tiktok"></i></a>
+          <a class="w-9 h-9 rounded-full glass grid place-items-center hover:text-[var(--blue)]"><i class="fa-brands fa-google"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between gap-3 text-[11px] uppercase tracking-widest text-white/30">
+      <div>© 2026 Pitstop Polish · Mobile Detailing Toronto</div>
+      <div>Family-run · Licensed · Insured</div>
+    </div>
+  </footer>
+</section>
+
+<!-- =====================================================
+     SERVICES
+====================================================== -->
+<section id="services-page" class="page-section hidden">
+  <div class="px-5 md:px-8 pt-16 pb-10 max-w-[1280px] mx-auto">
+    <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> Our menu</div>
+    <h1 class="display text-[56px] md:text-[112px]">Every service,<br/><span class="text-[var(--blue)]">explained.</span></h1>
+    <p class="mt-6 text-white/60 max-w-2xl text-[15px] leading-relaxed">No filler. Every product, tool and process below is exactly what we use on your car. Prices vary slightly by vehicle size — get a precise quote on the booking page.</p>
+  </div>
+
+  <!-- Detailing Packages -->
+  <div class="px-5 md:px-8 max-w-[1280px] mx-auto mt-10">
+    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-2">
+      <div class="eyebrow text-[var(--blue)]">Detailing Packages</div>
+      <div class="text-[11px] uppercase tracking-widest text-white/40">From $179</div>
+    </div>
+
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">In and Out</h3>
+        <p class="svc-desc">A thorough interior vacuum and wipe-down paired with a full exterior hand wash, wheel clean, and tire dressing. The perfect refresh between full details.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">From</div>
+        <div class="amt">$179.99</div>
+      </div>
+    </div>
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">Complete Detail <span class="text-[10px] font-bold uppercase tracking-widest bg-[var(--blue)]/15 text-[var(--blue)] px-2 py-1 rounded-full">Most Popular</span></h3>
+        <p class="svc-desc">Our most comprehensive package — full interior deep clean, leather conditioning, exterior hand wash, clay bar treatment, paint sealant, and window clean inside and out.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">From</div>
+        <div class="amt">$299.99</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paint Correction -->
+  <div class="px-5 md:px-8 max-w-[1280px] mx-auto mt-16">
+    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-2">
+      <div class="eyebrow text-[var(--blue)]">Paint Correction</div>
+      <div class="text-[11px] uppercase tracking-widest text-white/40">Sedan / SUV</div>
+    </div>
+
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">1-Step Correction <span class="text-white/40 font-medium text-[15px]">— Light Swirls</span></h3>
+        <p class="svc-desc">Single-stage machine polish to remove light swirl marks, holograms and minor surface imperfections. Restores depth and gloss to factory-condition paint.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">Sedan / SUV</div>
+        <div class="amt">$300–500 / $400–600</div>
+      </div>
+    </div>
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">2-Step Correction <span class="text-white/40 font-medium text-[15px]">— Moderate Defects</span></h3>
+        <p class="svc-desc">Cut and polish process for daily-driver paint that's seen automatic washes, brushes or years of weather. Eliminates moderate scratches and oxidation.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">Sedan / SUV</div>
+        <div class="amt">$600–900 / $700–1,000</div>
+      </div>
+    </div>
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">3-Step Correction <span class="text-white/40 font-medium text-[15px]">— Heavy Restoration</span></h3>
+        <p class="svc-desc">Full multi-stage paint resurrection. Heavy compound, refining polish and finishing pass for deep scratches, severe swirls and neglected paint. Mirror finish, restored.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">Sedan / SUV</div>
+        <div class="amt">$900–1,300+ / $1,100–1,500+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paint Protection -->
+  <div class="px-5 md:px-8 max-w-[1280px] mx-auto mt-16">
+    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-2">
+      <div class="eyebrow text-[var(--blue)]">Paint Protection</div>
+      <div class="text-[11px] uppercase tracking-widest text-white/40">Years of gloss</div>
+    </div>
+
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">Ceramic Coating</h3>
+        <p class="svc-desc">A professional-grade nano-ceramic layer that bonds to your paint, creating a hydrophobic, UV-resistant shield. Easier to maintain and longer-lasting than wax or sealant.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">From</div>
+        <div class="amt">$800</div>
+      </div>
+    </div>
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">Glass Coating</h3>
+        <p class="svc-desc">Applies a hydrophobic ceramic coating to all glass surfaces. Rain beads off at speed, improves nighttime visibility, and resists road grime buildup.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">From</div>
+        <div class="amt">$100</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add-Ons -->
+  <div class="px-5 md:px-8 max-w-[1280px] mx-auto mt-16 pb-24">
+    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-2">
+      <div class="eyebrow text-[var(--blue)]">Add-Ons</div>
+      <div class="text-[11px] uppercase tracking-widest text-white/40">Mix &amp; match</div>
+    </div>
+
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">Engine Bay Detail</h3>
+        <p class="svc-desc">Degreased, agitated, and carefully rinsed for a clean, like-new engine bay. Great before a sale or for everyday peace of mind.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">From</div>
+        <div class="amt">$60</div>
+      </div>
+    </div>
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">Headlight Restoration</h3>
+        <p class="svc-desc">Removes UV haze and yellowing from plastic headlight lenses using a multi-stage wet sanding and polishing process.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">From</div>
+        <div class="amt">$140</div>
+      </div>
+    </div>
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">Pet Hair Removal</h3>
+        <p class="svc-desc">Thorough removal of embedded pet hair from carpets and upholstery using specialized tools and techniques.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">From</div>
+        <div class="amt">$60</div>
+      </div>
+    </div>
+    <div class="svc-row">
+      <div class="svc-body">
+        <h3 class="svc-title">Ozone Odor Removal</h3>
+        <p class="svc-desc">Industrial ozone treatment that eliminates smoke, pet, food, and mildew odours at the source — not just masking them.</p>
+      </div>
+      <div class="svc-price">
+        <div class="lbl">From</div>
+        <div class="amt">$130</div>
+      </div>
+    </div>
+
+    <div class="text-center text-white/40 text-[12px] mt-12">Prices may vary depending on vehicle condition and size. All services by appointment. Contact us for a custom quote.</div>
+
+    <div class="mt-14 text-center">
+      <button onclick="showPage('booking')" class="btn-primary px-8 py-4 rounded-full text-[12px] uppercase tracking-[.2em]">Book your detail →</button>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     GALLERY
+====================================================== -->
+<section id="gallery-page" class="page-section hidden">
+  <div class="px-5 md:px-8 pt-16 pb-12 max-w-[1280px] mx-auto">
+    <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> The portfolio</div>
+    <h1 class="display text-[56px] md:text-[112px]">Receipts.</h1>
+    <p class="mt-6 text-white/60 max-w-2xl text-[15px] leading-relaxed">A few of our recent jobs across the GTA. Daily drivers, weekend toys, and the occasional showroom rescue.</p>
+  </div>
+
+  <div class="px-5 md:px-8 pb-24 max-w-[1280px] mx-auto grid grid-cols-2 md:grid-cols-12 gap-3 md:gap-4">
+    <div class="g-card aspect-[4/5] md:col-span-5 md:row-span-2 md:aspect-auto md:h-[700px]"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Porsche 911 · Forest Hill</div></div>
+    <div class="g-card aspect-square md:col-span-4"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1552933529-e359b2477252?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">BMW M3 · King West</div></div>
+    <div class="g-card aspect-square md:col-span-3"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Audi RS5 · Yorkville</div></div>
+    <div class="g-card aspect-square md:col-span-3"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Mercedes G63 · Vaughan</div></div>
+    <div class="g-card aspect-[4/5] md:col-span-4 md:aspect-auto md:h-[420px]"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Tesla Model 3 · Liberty</div></div>
+    <div class="g-card aspect-square md:col-span-6"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1549924231-f129b911e442?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Range Rover · Rosedale</div></div>
+    <div class="g-card aspect-square md:col-span-6"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Lexus IS · Markham</div></div>
+    <div class="g-card aspect-square md:col-span-4"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1568844293986-8d0400bd4745?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Honda Civic Type R · Etobicoke</div></div>
+    <div class="g-card aspect-square md:col-span-4"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Toyota 4Runner · Scarborough</div></div>
+    <div class="g-card aspect-square md:col-span-4"><img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1607860108855-64acf2078ed9?q=80&w=2000&auto=format&fit=crop" alt=""><div class="absolute bottom-4 left-4 text-[10px] uppercase tracking-widest font-bold bg-black/60 px-3 py-1 rounded-full">Ford F-150 · Mississauga</div></div>
+  </div>
+
+  <div class="text-center pb-24">
+    <button onclick="showPage('booking')" class="btn-primary px-8 py-4 rounded-full text-[12px] uppercase tracking-[.2em]">Yours could be next →</button>
+  </div>
+</section>
+
+<!-- =====================================================
+     BOOKING / PRICING
+====================================================== -->
+<section id="booking-page" class="page-section hidden">
+  <div class="px-5 md:px-8 pt-16 pb-10 max-w-[1280px] mx-auto">
+    <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> Build your detail</div>
+    <h1 class="display text-[56px] md:text-[112px]">Get a quote<br/>in 60 seconds.</h1>
+    <p class="mt-6 text-white/60 max-w-2xl text-[15px] leading-relaxed">Tell us your car. Pick a package. Add anything extra. We'll text you to confirm a time.</p>
+  </div>
+
+  <div id="booking-build" class="px-5 md:px-8 pb-32 max-w-[1280px] mx-auto">
+
+    <!-- Step 1: Vehicle -->
+    <div class="card rounded-2xl p-6 md:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-7 h-7 rounded-full bg-[var(--blue)] grid place-items-center text-[12px] font-bold">1</div>
+        <h3 class="font-bold text-[16px]">Your vehicle</h3>
+      </div>
+      <input type="text" id="carInput" oninput="processVehicle()" placeholder="Year, Make &amp; Model — e.g. 2022 BMW X5"
+             class="w-full bg-black/40 border border-white/10 px-5 py-4 rounded-xl focus:border-[var(--blue)] outline-none text-[16px] font-medium text-white placeholder:text-white/30">
+      <div id="detectedBadge" class="mt-4 hidden">
+        <span id="badgeText" class="inline-flex items-center gap-2 bg-[var(--blue)]/15 text-[var(--blue)] border border-[var(--blue)]/30 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest">
+          <i class="fa-solid fa-car"></i> Detected: Sedan
+        </span>
+      </div>
+    </div>
+
+    <!-- Step 2: Package -->
+    <div class="card rounded-2xl p-6 md:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-7 h-7 rounded-full bg-[var(--blue)] grid place-items-center text-[12px] font-bold">2</div>
+        <h3 class="font-bold text-[16px]">Choose a package</h3>
+      </div>
+
+      <div class="pkg-row scroll-hide">
+        <div id="pkg-inout" onclick="selectPkg('inout',179.99)" class="tier rounded-2xl p-7 cursor-pointer">
+          <div class="eyebrow text-white/40 mb-2">Level 1 · Refresh</div>
+          <h3 class="display text-[36px] mb-1">In and Out</h3>
+          <div class="num text-[44px] text-white mb-5">$179.99</div>
+          <p class="text-white/55 text-[13px] mb-5 leading-relaxed">A thorough interior vacuum and wipe-down paired with a full exterior hand wash, wheel clean, and tire dressing.</p>
+          <ul class="space-y-3 text-[13px]">
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Interior vacuum &amp; wipe-down</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Exterior hand wash</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Wheels &amp; tire dressing</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Windows inside &amp; out</li>
+          </ul>
+        </div>
+
+        <div id="pkg-complete" onclick="selectPkg('complete',299.99)" class="tier rounded-2xl p-7 cursor-pointer active relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[var(--blue)] text-white px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Most Popular</div>
+          <div class="eyebrow text-[var(--blue)] mb-2">Level 2 · Full</div>
+          <h3 class="display text-[36px] mb-1">Complete Detail</h3>
+          <div class="num text-[44px] text-[var(--blue)] mb-5">$299.99</div>
+          <p class="text-white/55 text-[13px] mb-5 leading-relaxed">Our most comprehensive package — full interior deep clean, leather conditioning, clay bar, paint sealant, glass.</p>
+          <ul class="space-y-3 text-[13px]">
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Everything in In and Out</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Interior deep clean &amp; shampoo</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Leather condition &amp; protect</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Clay bar decontamination</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Paint sealant (4–6 mo. protection)</li>
+          </ul>
+        </div>
+
+        <div id="pkg-showroom" onclick="selectPkg('showroom',449.99)" class="tier rounded-2xl p-7 cursor-pointer">
+          <div class="eyebrow text-white/40 mb-2">Level 3 · Showroom</div>
+          <h3 class="display text-[36px] mb-1">Showroom</h3>
+          <div class="num text-[44px] text-white mb-5">$449.99</div>
+          <p class="text-white/55 text-[13px] mb-5 leading-relaxed">Complete Detail plus a 1-step paint enhancement and a 6-month ceramic spray sealant. Pre-sale prep, weddings, special days.</p>
+          <ul class="space-y-3 text-[13px]">
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Everything in Complete Detail</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> 1-step paint enhancement</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> 6-month ceramic spray sealant</li>
+            <li class="flex gap-3"><span class="check"><i class="fa-solid fa-check"></i></span> Trim &amp; plastic restoration</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Paint Correction -->
+    <div class="card rounded-2xl p-6 md:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-7 h-7 rounded-full bg-[var(--blue)] grid place-items-center text-[12px] font-bold">3</div>
+        <h3 class="font-bold text-[16px]">Paint correction <span class="text-white/40 font-normal">— optional</span></h3>
+      </div>
+      <div class="grid gap-3">
+        <div onclick="toggleCorrection(this,'s1',400,500)" class="corr-item tier rounded-xl p-5 cursor-pointer flex items-center justify-between gap-4">
+          <div>
+            <div class="font-bold text-[14px]">1-Step — Light Swirls</div>
+            <div class="text-white/55 text-[12px] mt-1">Single-stage polish. Restores depth &amp; gloss to factory-condition paint.</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] uppercase tracking-widest text-white/40">Sedan / SUV</div>
+            <div class="num text-[18px] text-[var(--blue)] price-label" data-sedan="$300–500" data-suv="$400–600">$300–500 / $400–600</div>
+          </div>
+        </div>
+        <div onclick="toggleCorrection(this,'s2',750,850)" class="corr-item tier rounded-xl p-5 cursor-pointer flex items-center justify-between gap-4">
+          <div>
+            <div class="font-bold text-[14px]">2-Step — Moderate Defects</div>
+            <div class="text-white/55 text-[12px] mt-1">Cut &amp; polish for daily-driver paint. Removes scratches &amp; oxidation.</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] uppercase tracking-widest text-white/40">Sedan / SUV</div>
+            <div class="num text-[18px] text-[var(--blue)]">$600–900 / $700–1,000</div>
+          </div>
+        </div>
+        <div onclick="toggleCorrection(this,'s3',1100,1300)" class="corr-item tier rounded-xl p-5 cursor-pointer flex items-center justify-between gap-4">
+          <div>
+            <div class="font-bold text-[14px]">3-Step — Heavy Restoration</div>
+            <div class="text-white/55 text-[12px] mt-1">Multi-stage paint resurrection. Mirror finish, fully restored.</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] uppercase tracking-widest text-white/40">Sedan / SUV</div>
+            <div class="num text-[18px] text-[var(--blue)]">$900–1,300+ / $1,100–1,500+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Protection -->
+    <div class="card rounded-2xl p-6 md:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-7 h-7 rounded-full bg-[var(--blue)] grid place-items-center text-[12px] font-bold">4</div>
+        <h3 class="font-bold text-[16px]">Paint protection <span class="text-white/40 font-normal">— optional</span></h3>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div onclick="toggleAddon(this,800)" class="tier rounded-xl p-5 cursor-pointer">
+          <div class="font-bold text-[14px]">Ceramic Coating</div>
+          <div class="text-white/55 text-[12px] mt-1 mb-3">Pro-grade nano-ceramic. Hydrophobic, UV-resistant, years of gloss.</div>
+          <div class="num text-[20px] text-[var(--blue)]">+$800</div>
+        </div>
+        <div onclick="toggleAddon(this,100)" class="tier rounded-xl p-5 cursor-pointer">
+          <div class="font-bold text-[14px]">Glass Coating</div>
+          <div class="text-white/55 text-[12px] mt-1 mb-3">Hydrophobic ceramic on all glass. Rain beads off at speed.</div>
+          <div class="num text-[20px] text-[var(--blue)]">+$100</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Add-Ons -->
+    <div class="card rounded-2xl p-6 md:p-8 mb-6">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-7 h-7 rounded-full bg-[var(--blue)] grid place-items-center text-[12px] font-bold">5</div>
+        <h3 class="font-bold text-[16px]">Add-ons <span class="text-white/40 font-normal">— mix &amp; match</span></h3>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div onclick="toggleAddon(this,60)" class="tier rounded-xl p-5 cursor-pointer">
+          <i class="fa-solid fa-gear text-[var(--blue)] mb-3"></i>
+          <div class="font-bold text-[13px]">Engine Bay Detail</div>
+          <div class="text-white/55 text-[11px] mt-1 mb-3">Like-new engine bay.</div>
+          <div class="num text-[18px] text-[var(--blue)]">+$60</div>
+        </div>
+        <div onclick="toggleAddon(this,140)" class="tier rounded-xl p-5 cursor-pointer">
+          <i class="fa-solid fa-lightbulb text-[var(--blue)] mb-3"></i>
+          <div class="font-bold text-[13px]">Headlight Restoration</div>
+          <div class="text-white/55 text-[11px] mt-1 mb-3">Removes UV haze.</div>
+          <div class="num text-[18px] text-[var(--blue)]">+$140</div>
+        </div>
+        <div onclick="toggleAddon(this,60)" class="tier rounded-xl p-5 cursor-pointer">
+          <i class="fa-solid fa-paw text-[var(--blue)] mb-3"></i>
+          <div class="font-bold text-[13px]">Pet Hair Removal</div>
+          <div class="text-white/55 text-[11px] mt-1 mb-3">Embedded hair, gone.</div>
+          <div class="num text-[18px] text-[var(--blue)]">+$60</div>
+        </div>
+        <div onclick="toggleAddon(this,130)" class="tier rounded-xl p-5 cursor-pointer">
+          <i class="fa-solid fa-wind text-[var(--blue)] mb-3"></i>
+          <div class="font-bold text-[13px]">Ozone Odor</div>
+          <div class="text-white/55 text-[11px] mt-1 mb-3">Eliminates smoke, pet, food.</div>
+          <div class="num text-[18px] text-[var(--blue)]">+$130</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-white/40 text-[12px] mt-6 text-center">Prices may vary depending on vehicle condition and size. All services by appointment.</p>
+  </div>
+
+  <!-- ============== STEP 2: LOCATION ============== -->
+  <div id="step-location" class="hidden px-5 md:px-8 pb-32 max-w-[1280px] mx-auto">
+    <button onclick="goStep('build')" class="text-white/50 hover:text-white text-[12px] font-bold uppercase tracking-widest mb-6"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+    <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> Step 2 of 3</div>
+    <h2 class="display text-[40px] md:text-[80px] mb-3">Where should<br/>we meet?</h2>
+    <p class="text-white/60 text-[15px] mb-10 max-w-xl">We come to you anywhere in the GTA — or pull up to one of our two shop locations.</p>
+
+    <div class="grid lg:grid-cols-2 gap-4">
+      <!-- Mobile -->
+      <div onclick="selectLoc('mobile')" id="loc-mobile" class="loc-card tier rounded-2xl p-6 md:p-8 cursor-pointer">
+        <div class="flex items-start justify-between mb-4">
+          <div class="w-12 h-12 rounded-xl bg-[var(--blue)]/15 grid place-items-center"><i class="fa-solid fa-truck-pickup text-[var(--blue)] text-[20px]"></i></div>
+          <span class="text-[10px] font-bold uppercase tracking-widest bg-[var(--blue)]/15 text-[var(--blue)] px-2 py-1 rounded-full">Most Popular</span>
+        </div>
+        <h3 class="display text-[28px] mb-2">We Come to You</h3>
+        <p class="text-white/55 text-[13px] mb-5 leading-relaxed">Driveway, condo lot, office parking — our self-contained rig handles it. We just need a flat spot.</p>
+        <div class="relative" onclick="event.stopPropagation();selectLoc('mobile');">
+          <input type="text" id="addrInput" autocomplete="off" oninput="onAddrInput(this.value)" onfocus="onAddrInput(this.value)" onblur="setTimeout(()=>document.getElementById('addrSuggest').classList.add('hidden'),180)" placeholder="Start typing your address..." class="w-full bg-black/40 border border-white/10 px-4 py-3.5 rounded-xl focus:border-[var(--blue)] outline-none text-[14px] font-medium text-white placeholder:text-white/30">
+          <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-[12px]"></i>
+          <div id="addrSuggest" class="hidden absolute left-0 right-0 top-full mt-2 bg-[#0E1013] border border-white/10 rounded-xl overflow-hidden z-30 shadow-2xl"></div>
+        </div>
+        <div class="text-white/40 text-[11px] mt-3"><i class="fa-solid fa-location-dot mr-1 text-[var(--blue)]"></i> Free travel within Toronto · $25 outside core</div>
+      </div>
+
+      <!-- Shops -->
+      <div class="grid gap-3">
+        <div onclick="selectLoc('shop-king')" id="loc-shop-king" class="loc-card tier rounded-2xl p-6 cursor-pointer">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-white/5 grid place-items-center flex-shrink-0"><i class="fa-solid fa-warehouse text-[var(--blue)] text-[18px]"></i></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1"><h3 class="font-bold text-[16px]">Pitstop King West</h3><span class="text-[9px] uppercase tracking-widest text-white/40">Downtown</span></div>
+              <p class="text-white/55 text-[12px] leading-relaxed">488 King St W, Toronto · Heated indoor bays, espresso while you wait.</p>
+            </div>
+          </div>
+        </div>
+        <div onclick="selectLoc('shop-vaughan')" id="loc-shop-vaughan" class="loc-card tier rounded-2xl p-6 cursor-pointer">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-white/5 grid place-items-center flex-shrink-0"><i class="fa-solid fa-warehouse text-[var(--blue)] text-[18px]"></i></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1"><h3 class="font-bold text-[16px]">Pitstop Vaughan</h3><span class="text-[9px] uppercase tracking-widest text-white/40">North</span></div>
+              <p class="text-white/55 text-[12px] leading-relaxed">7700 Jane St, Vaughan · Free parking, two correction bays.</p>
+            </div>
+          </div>
+        </div>
+        <div class="glass rounded-2xl p-5 text-center text-white/50 text-[12px]"><i class="fa-solid fa-clock text-[var(--blue)] mr-2"></i> Both shops open Mon–Sat, 8 AM – 7 PM</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== STEP 3: PERSONAL INFO ============== -->
+  <div id="step-info" class="hidden px-5 md:px-8 pb-32 max-w-[760px] mx-auto">
+    <button onclick="goStep('location')" class="text-white/50 hover:text-white text-[12px] font-bold uppercase tracking-widest mb-6"><i class="fa-solid fa-arrow-left mr-2"></i> Back</button>
+    <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> Step 3 of 3</div>
+    <h2 class="display text-[40px] md:text-[80px] mb-3">Almost done.</h2>
+    <p class="text-white/60 text-[15px] mb-10">Last step. We'll text you to lock in a time within an hour.</p>
+
+    <div class="card rounded-2xl p-6 md:p-8 grid gap-5">
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-widest text-white/50 mb-2">First name</label>
+          <input type="text" oninput="state.firstName=this.value;updateProgress();" class="w-full bg-black/40 border border-white/10 px-4 py-3.5 rounded-xl focus:border-[var(--blue)] outline-none text-[15px] text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-widest text-white/50 mb-2">Last name</label>
+          <input type="text" oninput="state.lastName=this.value;updateProgress();" class="w-full bg-black/40 border border-white/10 px-4 py-3.5 rounded-xl focus:border-[var(--blue)] outline-none text-[15px] text-white">
+        </div>
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold uppercase tracking-widest text-white/50 mb-2">Email</label>
+        <input type="email" oninput="state.email=this.value;updateProgress();" placeholder="you@example.com" class="w-full bg-black/40 border border-white/10 px-4 py-3.5 rounded-xl focus:border-[var(--blue)] outline-none text-[15px] text-white placeholder:text-white/30">
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold uppercase tracking-widest text-white/50 mb-2">Phone</label>
+        <input type="tel" oninput="state.phone=this.value;updateProgress();" placeholder="(416) 555-0199" class="w-full bg-black/40 border border-white/10 px-4 py-3.5 rounded-xl focus:border-[var(--blue)] outline-none text-[15px] text-white placeholder:text-white/30">
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-widest text-white/50 mb-2">Preferred date</label>
+          <input type="date" oninput="state.date=this.value;updateProgress();" class="w-full bg-black/40 border border-white/10 px-4 py-3.5 rounded-xl focus:border-[var(--blue)] outline-none text-[15px] text-white">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase tracking-widest text-white/50 mb-2">Time window</label>
+          <select oninput="state.timeWin=this.value;updateProgress();" class="w-full bg-black/40 border border-white/10 px-4 py-3.5 rounded-xl focus:border-[var(--blue)] outline-none text-[15px] text-white">
+            <option>Morning (8 AM – 12 PM)</option><option>Afternoon (12 PM – 4 PM)</option><option>Evening (4 PM – 7 PM)</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-[11px] font-bold uppercase tracking-widest text-white/50 mb-2">Notes <span class="text-white/30 normal-case tracking-normal">(optional)</span></label>
+        <textarea rows="3" oninput="state.notes=this.value" placeholder="Anything we should know? Pet hair, gate codes, special requests..." class="w-full bg-black/40 border border-white/10 px-4 py-3.5 rounded-xl focus:border-[var(--blue)] outline-none text-[15px] text-white placeholder:text-white/30"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== STEP 4: CONFIRMED ============== -->
+  <div id="step-done" class="hidden px-5 md:px-8 pb-32 max-w-[760px] mx-auto text-center">
+    <div class="w-20 h-20 rounded-full bg-[var(--blue)]/15 grid place-items-center mx-auto mb-8"><i class="fa-solid fa-check text-[var(--blue)] text-[32px]"></i></div>
+    <div class="eyebrow text-[var(--blue)] mb-3"><span class="dot mr-2"></span> You're booked</div>
+    <h2 class="display text-[44px] md:text-[88px] mb-4">See you soon.</h2>
+    <p class="text-white/60 text-[16px] mb-10 max-w-md mx-auto">We just emailed your confirmation. A team member will text within an hour to lock in your exact arrival window.</p>
+    <div class="card rounded-2xl p-6 text-left mb-8">
+      <div class="text-[10px] uppercase tracking-widest text-white/40 mb-3">Your booking</div>
+      <div id="summary" class="space-y-2 text-[14px]"></div>
+    </div>
+    <button onclick="showPage('home')" class="btn-primary px-8 py-4 rounded-full text-[12px] uppercase tracking-[.2em]">Back to home</button>
+  </div>
+</section>
+
+</main>
+
+<!-- ============== STICKY FOOTER ============== -->
+<div id="sticky-footer" class="fixed bottom-0 inset-x-0 z-[90] backdrop-blur-xl bg-[#070809]/95 border-t border-[var(--blue)]/30 hidden">
+  <div class="max-w-[1280px] mx-auto px-5 md:px-8 py-4 flex items-center justify-between gap-3">
+    <div class="flex-1 min-w-0">
+      <div class="text-[9px] uppercase tracking-widest text-white/45 font-bold" id="footerLbl">Estimated total</div>
+      <div class="num text-[22px] md:text-[32px] leading-none">$<span id="totalDisplay">299.99</span></div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="backBtn" onclick="backStep()" class="hidden items-center gap-2 px-4 md:px-5 py-3.5 rounded-full border border-white/15 hover:bg-white/5 text-[10px] md:text-[12px] uppercase tracking-[.16em] font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-left text-[10px]"></i><span>Back</span></button>
+      <button id="ctaBtn" onclick="advanceStep()" class="btn-primary px-4 md:px-8 py-3.5 rounded-full text-[10px] md:text-[12px] uppercase tracking-[.16em] whitespace-nowrap">Confirm Package →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* === state === */
+  let state = { vehicle:'sedan', vehicleText:'', pkg:{id:'complete',price:299.99,name:'Complete Detail'}, correction:{id:'',price:0}, addons:0, addonItems:[], step:'build', location:'', address:'', firstName:'', lastName:'', email:'', phone:'', date:'', timeWin:'Morning (8 AM – 12 PM)', notes:'' };
+  const PKG_NAMES={inout:'In and Out',complete:'Complete Detail',showroom:'Showroom'};
+  const suvKeywords = ['x5','x7','q7','q8','tahoe','truck','f150','f-150','suv','jeep','rover','model x','model y','tahoe','escalade','suburban','pilot','highlander','4runner','rav4','expedition','navigator','g-wagon','g63','g-class','glc','gle','gls','wrangler','bronco'];
+
+  /* === nav / pages === */
+  function showPage(id){
+    document.querySelectorAll('.page-section').forEach(s=>s.classList.add('hidden'));
+    const el = document.getElementById(id+'-page');
+    if(el) el.classList.remove('hidden');
+    document.getElementById('sticky-footer').classList.toggle('hidden', id!=='booking');
+    document.querySelectorAll('.nav-link').forEach(n=>n.classList.toggle('active', n.dataset.nav===id));
+    if(id==='booking') goStep('build');
+    window.scrollTo({top:0,behavior:'instant'});
+    requestAnimationFrame(handleReveal);
+  }
+
+  /* === step flow === */
+  function goStep(s){
+    state.step = s;
+    ['build','location','info','done'].forEach(k=>{
+      const el = document.getElementById(k==='build' ? 'booking-build' : 'step-'+k);
+      if(el) el.classList.toggle('hidden', k!==s);
+    });
+    const cta = document.getElementById('ctaBtn');
+    const lbl = document.getElementById('footerLbl');
+    const foot = document.getElementById('sticky-footer');
+    const back = document.getElementById('backBtn');
+    back.classList.remove('flex'); back.classList.add('hidden');
+    if(s==='build'){ cta.innerHTML='Confirm Package →'; lbl.innerText='Estimated total'; foot.classList.remove('hidden'); }
+    if(s==='location'){ cta.innerHTML='Confirm Address →'; lbl.innerText='Estimated total'; foot.classList.remove('hidden'); back.classList.remove('hidden'); back.classList.add('flex'); }
+    if(s==='info'){ cta.innerHTML='Confirm Booking →'; lbl.innerText='Estimated total'; foot.classList.remove('hidden'); back.classList.remove('hidden'); back.classList.add('flex'); }
+    if(s==='done'){ foot.classList.add('hidden'); renderSummary(); }
+    window.scrollTo({top:0,behavior:'instant'});
+  }
+  function backStep(){
+    if(state.step==='location') goStep('build');
+    else if(state.step==='info') goStep('location');
+  }
+  function showToast(msg, focusId){
+    let t = document.getElementById('toast');
+    if(!t){
+      t = document.createElement('div');
+      t.id = 'toast';
+      t.className = 'fixed left-1/2 -translate-x-1/2 bottom-28 z-[120] px-5 py-4 rounded-2xl bg-[#0E1013] border border-[var(--blue)]/40 shadow-2xl flex items-center gap-3 text-[13px] font-medium max-w-[92vw] opacity-0 translate-y-2 transition-all duration-300';
+      t.innerHTML = '<div class="w-9 h-9 rounded-full bg-[var(--blue)]/15 grid place-items-center flex-shrink-0"><i class="fa-solid fa-circle-info text-[var(--blue)]"></i></div><div id="toastMsg" class="text-white/90 leading-snug"></div>';
+      document.body.appendChild(t);
+    }
+    document.getElementById('toastMsg').innerText = msg;
+    requestAnimationFrame(()=>{ t.classList.remove('opacity-0','translate-y-2'); });
+    clearTimeout(window.__toastT);
+    window.__toastT = setTimeout(()=>{ t.classList.add('opacity-0','translate-y-2'); }, 3600);
+    if(focusId){
+      const el = document.getElementById(focusId);
+      if(el){ el.focus({preventScroll:false}); el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('ring-2','ring-[var(--blue)]/60'); setTimeout(()=>el.classList.remove('ring-2','ring-[var(--blue)]/60'),1800); }
+    }
+  }
+  function advanceStep(){
+    if(state.step==='build'){
+      if(!state.pkg.id){ showToast('Pick a package to keep going — we\'ll wait!'); return; }
+      goStep('location');
+    } else if(state.step==='location'){
+      if(!state.location){ showToast('Where should we meet you? Choose a location below.'); return; }
+      if(state.location==='mobile' && !state.address.trim()){ showToast('Almost there! Drop in your address so our rig knows where to roll up.', 'addrInput'); return; }
+      goStep('info');
+    } else if(state.step==='info'){
+      if(!state.firstName || !state.email || !state.phone){ showToast('We just need your name, email, and phone to lock it in.'); return; }
+      goStep('done');
+    }
+  }
+  function selectLoc(id){
+    state.location = id;
+    document.querySelectorAll('.loc-card').forEach(c=>c.classList.remove('active'));
+    document.getElementById('loc-'+id).classList.add('active');
+  }
+  function updateProgress(){}
+  /* === address autocomplete === */
+  const ADDR_DB = [
+    '488 King St W, Toronto, ON M5V 1L9',
+    '120 Adelaide St W, Toronto, ON M5H 1T1',
+    '1 Yonge St, Toronto, ON M5E 1W7',
+    '255 Front St W, Toronto, ON M5V 2W6',
+    '301 Front St W, Toronto, ON M5V 2T6',
+    '85 Queens Wharf Rd, Toronto, ON M5V 0J9',
+    '50 Bay St, Toronto, ON M5J 3A5',
+    '200 Bay St, Toronto, ON M5J 2J2',
+    '700 Bay St, Toronto, ON M5G 1Z6',
+    '60 Harbour St, Toronto, ON M5J 0B7',
+    '11 Wellesley St W, Toronto, ON M4Y 0G5',
+    '101 Charles St E, Toronto, ON M4Y 0C5',
+    '155 Yorkville Ave, Toronto, ON M5R 1C4',
+    '88 Cumberland St, Toronto, ON M5R 1A8',
+    '32 Trolley Cres, Toronto, ON M5A 0E8',
+    '170 Bayview Ave, Toronto, ON M5A 0L7',
+    '5160 Yonge St, North York, ON M2N 6L9',
+    '4711 Yonge St, North York, ON M2N 6K8',
+    '7700 Jane St, Vaughan, ON L4K 2M9',
+    '300 Burnhamthorpe Rd W, Mississauga, ON L5B 3K1',
+    '4070 Confederation Pkwy, Mississauga, ON L5B 0E9',
+    '8401 Warden Ave, Markham, ON L6G 0B6',
+    '15 Iceboat Terrace, Toronto, ON M5V 4A5',
+    '386 Yonge St, Toronto, ON M5B 0A5',
+    '12 York St, Toronto, ON M5J 0A9',
+    '1 Bloor St E, Toronto, ON M4W 0A8',
+    '101 Erskine Ave, Toronto, ON M4P 0C9',
+    '20 Bruyeres Mews, Toronto, ON M5V 0G8',
+    '36 Lisgar St, Toronto, ON M6J 0C7',
+    '650 King St W, Toronto, ON M5V 0L8'
+  ];
+  function onAddrInput(v){
+    state.address = v;
+    const box = document.getElementById('addrSuggest');
+    const q = (v||'').trim().toLowerCase();
+    if(q.length < 2){ box.classList.add('hidden'); return; }
+    const matches = ADDR_DB.filter(a => a.toLowerCase().includes(q)).slice(0,5);
+    if(!matches.length){ box.classList.add('hidden'); return; }
+    box.innerHTML = matches.map(a=>{
+      const idx = a.toLowerCase().indexOf(q);
+      const html = a.slice(0,idx) + '<span class="text-[var(--blue)] font-bold">' + a.slice(idx,idx+q.length) + '</span>' + a.slice(idx+q.length);
+      return '<button type="button" onmousedown="event.preventDefault();pickAddr(this.dataset.a)" data-a="'+a.replace(/"/g,'&quot;')+'" class="w-full text-left px-4 py-3 hover:bg-white/5 border-b border-white/5 last:border-0 text-[13px] flex items-center gap-3 transition"><i class="fa-solid fa-location-dot text-[var(--blue)] text-[11px]"></i><span class="flex-1">'+html+'</span><i class="fa-solid fa-arrow-up-right-from-square text-white/20 text-[10px]"></i></button>';
+    }).join('');
+    box.classList.remove('hidden');
+  }
+  function pickAddr(a){
+    document.getElementById('addrInput').value = a;
+    state.address = a;
+    document.getElementById('addrSuggest').classList.add('hidden');
+    selectLoc('mobile');
+  }
+  function renderSummary(){
+    const total = (state.pkg.price||0)+(state.correction.price||0)+(state.addons||0);
+    const locName = state.location==='mobile' ? `Mobile · ${state.address}` : (state.location==='shop-king' ? 'Pitstop King West' : 'Pitstop Vaughan');
+    document.getElementById('summary').innerHTML = `
+      <div class="flex justify-between gap-3"><span class="text-white/50">Package</span><span class="font-bold text-right">${PKG_NAMES[state.pkg.id]||'—'}</span></div>
+      <div class="flex justify-between gap-3"><span class="text-white/50">Vehicle</span><span class="font-bold text-right">${state.vehicleText||state.vehicle.toUpperCase()}</span></div>
+      <div class="flex justify-between gap-3"><span class="text-white/50">Where</span><span class="font-bold text-right">${locName}</span></div>
+      <div class="flex justify-between gap-3"><span class="text-white/50">When</span><span class="font-bold text-right">${state.date||'TBD'} · ${state.timeWin}</span></div>
+      <div class="flex justify-between gap-3"><span class="text-white/50">Contact</span><span class="font-bold text-right">${state.firstName} ${state.lastName}<br><span class="font-normal text-white/50 text-[12px]">${state.email}</span></span></div>
+      <div class="flex justify-between gap-3 pt-3 mt-2 border-t border-white/10"><span class="text-white/50">Total</span><span class="num text-[var(--blue)] text-[20px]">$${total.toFixed(2)}</span></div>`;
+  }
+  function toggleMenu(){ document.getElementById('mobile-menu').classList.toggle('open'); }
+
+  /* === before/after === */
+  function moveBA(v){
+    const after = document.querySelector('.ba-after');
+    const handle = document.getElementById('ba-handle');
+    if(after) after.style.clipPath = `inset(0 0 0 ${v}%)`;
+    if(handle) handle.style.left = v+'%';
+  }
+
+  /* === booking === */
+  function processVehicle(){
+    const raw = document.getElementById('carInput').value;
+    state.vehicleText = raw;
+    const input = raw.toLowerCase();
+    const isSUV = suvKeywords.some(k=>input.includes(k));
+    state.vehicle = isSUV ? 'suv' : 'sedan';
+    document.getElementById('detectedBadge').classList.toggle('hidden', input.trim().length<2);
+    document.getElementById('badgeText').innerHTML = `<i class="fa-solid fa-${isSUV?'truck-pickup':'car'}"></i> Detected: ${state.vehicle.toUpperCase()}`;
+    updateTotal();
+  }
+  function selectPkg(id, price){
+    document.querySelectorAll('#booking-page .tier').forEach(c=>{ if(c.id && c.id.startsWith('pkg-')) c.classList.remove('active'); });
+    if(state.pkg.id === id){ state.pkg = {id:'',price:0,name:''}; }
+    else { document.getElementById('pkg-'+id).classList.add('active'); state.pkg = {id,price,name:PKG_NAMES[id]}; }
+    updateTotal();
+  }
+  function toggleCorrection(el, id, sedanP, suvP){
+    const wasActive = el.classList.contains('active');
+    document.querySelectorAll('.corr-item').forEach(c=>c.classList.remove('active'));
+    if(!wasActive){ el.classList.add('active'); state.correction = {id, price: state.vehicle==='sedan'?sedanP:suvP}; }
+    else { state.correction = {id:'',price:0}; }
+    updateTotal();
+  }
+  function toggleAddon(el, price){
+    const isActive = el.classList.toggle('active');
+    state.addons += isActive ? price : -price;
+    updateTotal();
+  }
+  function updateTotal(){
+    const total = (state.pkg.price||0) + (state.correction.price||0) + (state.addons||0);
+    document.getElementById('totalDisplay').innerText = total.toFixed(2);
+  }
+
+  /* === reveal === */
+  function handleReveal(){
+    const wh = window.innerHeight;
+    document.querySelectorAll('.reveal').forEach(r=>{
+      if(r.getBoundingClientRect().top < wh - 60) r.classList.add('in');
+    });
+  }
+  window.addEventListener('scroll', handleReveal, {passive:true});
+  window.addEventListener('load', ()=>{ handleReveal(); showPage('home'); });
+</script>
+</body>
+</html>
